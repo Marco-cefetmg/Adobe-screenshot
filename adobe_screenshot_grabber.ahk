@@ -6,7 +6,6 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance, Force
 SetBatchLines, -1
 
-;#Include, Gdip_All.ahk
 
 pToken := Gdip_Startup()
 #Persistent  ; Prevent the script from exiting automatically.
@@ -24,10 +23,17 @@ LButton::
 Click, Down
 KeyWait, LButton
 i := get_last_image(A_ScriptDir)
-i++
+
+i:= SubStr("000" . i, -3) ; Add leading zeros
 
 pBitmap:=Gdip_CreateBitmapFromClipboard()
-Gdip_SaveBitmapToFile(pBitmap, "Questão " i ".png")
+LastpBitmap:=Gdip_CreateBitmapFromFile("Questão " i ".png")
+
+if(i==0 || !(Gdip_GetImageWidth(pBitmap)==Gdip_GetImageWidth(LastpBitmap) && Gdip_GetImageHeight(pBitmap)==Gdip_GetImageHeight(LastpBitmap))){
+	i++
+	i:= SubStr("000" . i, -3) ; Add leading zeros
+	Gdip_SaveBitmapToFile(pBitmap, "Questão " i ".png")
+	}
 
 Click, Up
 return
@@ -56,7 +62,7 @@ get_last_image(Directory){
 ;#################################################
 ;#################################################
 
-1::
+F2::
 Hotkey, LButton, Toggle
 If(en=1){
 	en:=0
